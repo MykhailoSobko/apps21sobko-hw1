@@ -3,6 +3,7 @@ package ua.edu.ucu.tempseries;
 import java.util.Arrays;
 
 public class TemperatureSeriesAnalysis {
+    private static final double ABSOLUTE_ZERO = -273;
     private double [] temps;
     private int size;
     private int capacity;
@@ -41,29 +42,20 @@ public class TemperatureSeriesAnalysis {
         double deviation = 0;
         double mean = average();
         for (int i = 0; i < size; i++) {
-            deviation += Math.pow(temps[i] - mean, 2);
+            deviation += (temps[i] - mean) * (temps[i] - mean);
         }
         return Math.sqrt(deviation / size);
     }
 
     public double min() {
-        if (size == 0) {
-            throw new IllegalArgumentException();
-        }
-        return findTempClosestToValue(-273);
+        return findTempClosestToValue(ABSOLUTE_ZERO);
     }
 
     public double max() {
-        if (size == 0) {
-            throw new IllegalArgumentException();
-        }
         return findTempClosestToValue(Double.MAX_VALUE);
     }
 
     public double findTempClosestToZero() {
-        if (size == 0) {
-            throw new IllegalArgumentException();
-        }
         return findTempClosestToValue(0);
     }
 
