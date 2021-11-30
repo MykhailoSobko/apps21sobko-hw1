@@ -1,52 +1,144 @@
 package ua.edu.ucu.tempseries;
 
+import java.util.Arrays;
+
 public class TemperatureSeriesAnalysis {
+    private double [] temps;
+    private int size;
+    private int capacity;
 
     public TemperatureSeriesAnalysis() {
-
+        size = 0;
+        capacity = 0;
+        temps = new double[] {};
     }
 
     public TemperatureSeriesAnalysis(double[] temperatureSeries) {
+        size = temperatureSeries.length;
+        capacity = temperatureSeries.length;
+        temps = Arrays.copyOf(temperatureSeries, capacity);
+    }
 
+    public double sum() {
+        if (size == 0) {
+            throw new IllegalArgumentException();
+        }
+        double sum = 0;
+        for (int i = 0; i < size; i++) {
+            sum = sum + temps[i];
+        }
+        return sum;
     }
 
     public double average() {
-        return -1;
+        return sum() / size;
     }
 
     public double deviation() {
-        return 0;
+        if (size == 0) {
+            throw new IllegalArgumentException();
+        }
+        double deviation = 0;
+        double mean = average();
+        for (int i = 0; i < size; i++) {
+            deviation += Math.pow(temps[i] - mean, 2);
+        }
+        return Math.sqrt(deviation / size);
     }
 
     public double min() {
-        return 0;
+        if (size == 0) {
+            throw new IllegalArgumentException();
+        }
+        return findTempClosestToValue(-273);
     }
 
     public double max() {
-        return 0;
+        if (size == 0) {
+            throw new IllegalArgumentException();
+        }
+        return findTempClosestToValue(Double.MAX_VALUE);
     }
 
     public double findTempClosestToZero() {
-        return 0;
+        if (size == 0) {
+            throw new IllegalArgumentException();
+        }
+        return findTempClosestToValue(0);
     }
 
     public double findTempClosestToValue(double tempValue) {
-        return 0;
+        if (size == 0) {
+            throw new IllegalArgumentException();
+        }
+        double minDiff = Double.MAX_VALUE;
+        double tempClosest = 0;
+
+        for (int i = 0; i < size; i++) {
+            double currTemp = temps[i];
+            double currDiff = Math.abs(currTemp - tempValue);
+
+            if (currDiff < minDiff) {
+                minDiff = currDiff;
+                tempClosest = currTemp;
+            }
+            else if (currDiff == minDiff) {
+                tempClosest = Math.max(tempClosest, currTemp);
+            }
+        }
+        return tempClosest;
     }
 
     public double[] findTempsLessThen(double tempValue) {
-        return null;
+        if (size == 0) {
+            throw new IllegalArgumentException();
+        }
+        int count = 0;
+        double[] lessValues = new double[size];
+
+        for (int i = 0; i < capacity; i++) {
+            double currTemp = temps[i];
+            if (currTemp < tempValue) {
+                lessValues[count] = currTemp;
+                count++;
+            }
+        }
+        return Arrays.copyOfRange(lessValues, 0, count);
     }
 
     public double[] findTempsGreaterThen(double tempValue) {
-        return null;
+        if (size == 0) {
+            throw new IllegalArgumentException();
+        }
+        int count = 0;
+        double[] greaterValues = new double[size];
+
+        for (int i = 0; i < capacity; i++) {
+            double currTemp = temps[i];
+            if (currTemp >= tempValue) {
+                greaterValues[count] = currTemp;
+                count++;
+            }
+        }
+        return Arrays.copyOf(greaterValues, count);
     }
 
     public TempSummaryStatistics summaryStatistics() {
-        return null;
+        if (size == 0) {
+            throw new IllegalArgumentException();
+        }
+        return new TempSummaryStatistics(this);
     }
 
-    public int addTemps(double... temps) {
-        return 0;
+    public double addTemps(double... newTemps) {
+        for (double newTemp : newTemps) {
+            if (size == capacity) {
+                capacity *= 2;
+                temps = Arrays.copyOf(temps, capacity);
+            }
+            temps[size] = newTemp;
+            size++;
+        }
+        return sum();
     }
 }
