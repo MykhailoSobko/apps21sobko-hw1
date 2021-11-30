@@ -6,8 +6,8 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class TemperatureSeriesAnalysisTest {
-    private TemperatureSeriesAnalysis series = new TemperatureSeriesAnalysis(new double[] {1, 2, 3});
-    private TemperatureSeriesAnalysis emptySeries = new TemperatureSeriesAnalysis();
+    private final TemperatureSeriesAnalysis series = new TemperatureSeriesAnalysis(new double[] {1, 2, 3});
+    private final TemperatureSeriesAnalysis emptySeries = new TemperatureSeriesAnalysis();
 
     @Test
     public void testAverageWithOneElementArray() {
@@ -131,6 +131,10 @@ public class TemperatureSeriesAnalysisTest {
         assertEquals(Math.sqrt((double) 2 / 3), summary.getDevTemp(), 0);
         assertEquals(1, summary.getMinTemp(), 0);
         assertEquals(3, summary.getMaxTemp(), 0);
+    }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testEmptySummaryStatistics() {
+        TempSummaryStatistics emptySummary = emptySeries.summaryStatistics();
     }
 }
