@@ -82,9 +82,6 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double[] findTempsLessThen(double tempValue) {
-        if (size == 0) {
-            throw new IllegalArgumentException();
-        }
         int count = 0;
         double[] lessValues = new double[size];
 
@@ -99,9 +96,6 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double[] findTempsGreaterThen(double tempValue) {
-        if (size == 0) {
-            throw new IllegalArgumentException();
-        }
         int count = 0;
         double[] greaterValues = new double[size];
 
@@ -116,9 +110,6 @@ public class TemperatureSeriesAnalysis {
     }
 
     public TempSummaryStatistics summaryStatistics() {
-        if (size == 0) {
-            throw new IllegalArgumentException();
-        }
         return new TempSummaryStatistics(this);
     }
 
