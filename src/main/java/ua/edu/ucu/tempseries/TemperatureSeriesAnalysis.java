@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class TemperatureSeriesAnalysis {
     private static final double ABSOLUTE_ZERO = -273;
+    private static final double MIN_DIFFERENCE = 0.0000001;
     private double [] temps;
     private int size;
     private int capacity;
@@ -74,14 +75,14 @@ public class TemperatureSeriesAnalysis {
                 minDiff = currDiff;
                 tempClosest = currTemp;
             }
-            else if (currDiff == minDiff) {
+            else if (Math.abs(currDiff - minDiff) < MIN_DIFFERENCE) {
                 tempClosest = Math.max(tempClosest, currTemp);
             }
         }
         return tempClosest;
     }
 
-    public double[] findTempsLessThen(double tempValue) {
+    public double[] findTempsLessThan(double tempValue) {
         int count = 0;
         double[] lessValues = new double[size];
 
@@ -95,7 +96,7 @@ public class TemperatureSeriesAnalysis {
         return Arrays.copyOfRange(lessValues, 0, count);
     }
 
-    public double[] findTempsGreaterThen(double tempValue) {
+    public double[] findTempsGreaterThan(double tempValue) {
         int count = 0;
         double[] greaterValues = new double[size];
 
@@ -110,13 +111,21 @@ public class TemperatureSeriesAnalysis {
     }
 
     public TempSummaryStatistics summaryStatistics() {
+        if (size == 0) {
+            throw new IllegalArgumentException();
+        }
         return new TempSummaryStatistics(this);
     }
 
     public double addTemps(double... newTemps) {
         for (double newTemp : newTemps) {
             if (size == capacity) {
-                capacity *= 2;
+                if (capacity == 0) {
+                    capacity++;
+                }
+                else {
+                    capacity *= 2;
+                }
                 temps = Arrays.copyOf(temps, capacity);
             }
             temps[size] = newTemp;
